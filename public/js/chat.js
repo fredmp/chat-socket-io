@@ -72,7 +72,6 @@ jQuery('#message-form').on('submit', function (e) {
   button.attr('disabled', 'disabled').text('Sending...');
 
   socket.emit('createMessage', {
-    from: 'Client',
     text: input.val()
   }, function (data) {
     button.removeAttr('disabled').text('Send');

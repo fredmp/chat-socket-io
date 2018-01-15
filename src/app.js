@@ -48,19 +48,21 @@ io.on('connection', socket => {
   });
 
   socket.on('createMessage', (data, callback) => {
-    console.log('A new message was created', data);
-    data.createdAt = new Date().getTime();
+    const user = users.findById(socket.id);
 
-    io.emit('newMessage', data);
-
-    if (callback) {
-      callback('Got it!' + socket.id);
+    if (user && validString(data.text)) {
+      io.to(user.room).emit('newMessage', newMessage(user.name, data.text));
     }
+    if (callback) callback();
   });
 
   socket.on('createLocation', (data, callback) => {
-    console.log('A new location was created');
-    io.emit('newLocation', newLocation('Admin', data.latitude, data.longitude));
+    const user = users.findById(socket.id);
+
+    if (user) {
+      io.to(user.room).emit('newLocation', newLocation(user.name, data.latitude, data.longitude));
+    }
+    if (callback) callback();
   });
 
   socket.on('disconnect', () => {
