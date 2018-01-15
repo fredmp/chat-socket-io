@@ -3,7 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const { newMessage } = require('./utils/message');
+const { newMessage, newLocation } = require('./utils');
 
 const publicPath = path.join(__dirname, '../public');
 
@@ -27,8 +27,13 @@ io.on('connection', socket => {
     io.emit('newMessage', data);
 
     if (callback) {
-      callback('Got it!');
+      callback('Got it!' + socket.id);
     }
+  });
+
+  socket.on('createLocation', (data, callback) => {
+    console.log('A new location was created');
+    io.emit('newLocation', newLocation('Admin', data.latitude, data.longitude));
   });
 
   socket.on('disconnect', () => {
