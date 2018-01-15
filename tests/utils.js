@@ -1,6 +1,6 @@
 const expect = require('expect');
 
-const { newMessage, newLocation } = require('../src/utils');
+const { newMessage, newLocation, validString } = require('../src/utils');
 
 describe('newMessage', () => {
   it('generates a message object', () => {
@@ -19,5 +19,19 @@ describe('newLocation', () => {
     expect(typeof message.createdAt === 'number').toBeTruthy();
     expect(message.from).toBe('Me');
     expect(message.url).toBe('https://www.google.com/maps?q=-14.8519133,-48.03985');
+  });
+});
+
+describe('validString', () => {
+  it('rejects non string values', () => {
+    expect(validString(22)).toBeFalsy();
+  });
+
+  it('rejects strings with only spaces', () => {
+    expect(validString('    ')).toBeFalsy();
+  });
+
+  it('accepts strings with at least 1 non space character', () => {
+    expect(validString('A')).toBeTruthy();
   });
 });

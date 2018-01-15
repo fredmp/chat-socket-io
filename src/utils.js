@@ -15,3 +15,7 @@ module.exports.newLocation = (from, latitude, longitude) => {
     createdAt: moment().valueOf()
   }
 };
+
+module.exports.validString = (text) => {
+  return typeof text === 'string' && text.trim().length > 0;
+};
