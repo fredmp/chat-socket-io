@@ -20,8 +20,6 @@ io.on('connection', socket => {
 
   socket.broadcast.emit('newMessage', newMessage('Admin', 'A new user has joined'));
 
-  socket.emit('newMessage', newMessage('me', 'Some text'));
-
   socket.on('createMessage', (data, callback) => {
     console.log('A new message was created', data);
     data.createdAt = new Date().getTime();
