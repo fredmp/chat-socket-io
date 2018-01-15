@@ -22,15 +22,15 @@ io.on('connection', socket => {
 
   socket.emit('newMessage', newMessage('me', 'Some text'));
 
-  socket.on('createMessage', (data) => {
+  socket.on('createMessage', (data, callback) => {
     console.log('A new message was created', data);
     data.createdAt = new Date().getTime();
 
-    // Emits message to everyone
-    // io.emit('newMessage', data);
+    io.emit('newMessage', data);
 
-    // Emits message to everyone except sender
-    socket.broadcast.emit('newMessage', data);
+    if (callback) {
+      callback('Got it!');
+    }
   });
 
   socket.on('disconnect', () => {
