@@ -1,0 +1,16 @@
+{
+  "name": "node-chat-socket-io",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Frederico Martins Porto <martinsporto@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon --ignore tests/ yarn start",
+    "test": "NODE_ENV=test nodemon --exec 'mocha tests/ --recursive -R min'"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4"
+  }
+}
