@@ -3,10 +3,10 @@ var socket = io();
 socket.on('connect', function () {
 
   socket.emit('getRooms', function (data) {
-    if (data.length > 0) {
-      var newRoom = jQuery('[name=room]');
-      var select = jQuery('#existing-rooms');
+    var newRoom = jQuery('[name=room]');
+    var select = jQuery('#existing-rooms');
 
+    if (data.length > 0) {
       jQuery('#existing-rooms-div').show();
 
       populateDropdown(select, data);
@@ -38,7 +38,9 @@ function populateDropdown (dropdown, rooms) {
 
 function sendToChat () {
   var name = jQuery('[name=name]').val();
-  var selectedRoom = jQuery('#existing-rooms').val()
-  selectedRoom = selectedRoom === '' ? jQuery('[name=room]').val() : selectedRoom;
-  window.location.href = '/chat.html?name=' + name + '&room=' + selectedRoom;
+  var room = jQuery('[name=room]').val();
+  if (room === '' || room === undefined) {
+    room = jQuery('#existing-rooms').val();
+  }
+  window.location.href = '/chat.html?name=' + name + '&room=' + room;
 }
