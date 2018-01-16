@@ -19,3 +19,9 @@ module.exports.newLocation = (from, latitude, longitude) => {
 module.exports.validString = (text) => {
   return typeof text === 'string' && text.trim().length > 0;
 };
+
+module.exports.hyphenize = (text) => {
+  text = (text || '').toString().toLowerCase();
+  text = text.split(/\&+/).join("and");
+  return text.split(/[^a-z0-9]/).join("-");
+}

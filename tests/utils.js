@@ -1,6 +1,11 @@
 const expect = require('expect');
 
-const { newMessage, newLocation, validString } = require('../src/utils');
+const {
+  newMessage,
+  newLocation,
+  validString,
+  hyphenize
+} = require('../src/utils');
 
 describe('newMessage', () => {
   it('generates a message object', () => {
@@ -33,5 +38,12 @@ describe('validString', () => {
 
   it('accepts strings with at least 1 non space character', () => {
     expect(validString('A')).toBeTruthy();
+  });
+});
+
+describe('hyphenize', () => {
+  it('formats text separating words with hyphens', () => {
+    expect(hyphenize('Room 2')).toBe('room-2');
+    expect(hyphenize('Your room & their room')).toBe('your-room-and-their-room');
   });
 });

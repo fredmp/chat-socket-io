@@ -20,15 +20,18 @@ io.on('connection', socket => {
 
   socket.on('join', (data, callback) => {
     if (!validString(data.name) || !validString(data.room)) {
-      return callback('Name and room are required');
+      return callback('Name and room are required.');
+    }
+    if (users.findByNameAndRoom(data.name, data.room)) {
+      return callback('User name already in use. Please choose another one.');
     }
 
-    socket.join(data.room);
-
     users.remove(socket.id);
-    users.add(socket.id, data.name, data.room);
+    const user = users.add(socket.id, data.name, data.room);
 
-    io.to(data.room).emit('updateUserList', users.getUserNameListByRoom(data.room));
+    socket.join(user.room.id);
+
+    io.to(user.room.id).emit('updateUserList', users.getUserNameListByRoom(user.room.name));
     // Emit to all users:
     //    io.emit -> io.to(room).emit
     // Emit to all users except sender:
@@ -39,19 +42,23 @@ io.on('connection', socket => {
     //    socket.emit
 
     socket.emit('newMessage', newMessage('Admin', 'Welcome to the chat app'));
-    socket.broadcast.to(data.room).emit(
+    socket.broadcast.to(user.room.id).emit(
       'newMessage',
-      newMessage('Admin', `${data.name} has joined`)
+      newMessage('Admin', `${user.name} has joined`)
     );
 
     callback();
+  });
+
+  socket.on('getRooms', (callback) => {
+    if (callback) callback(users.getRooms());
   });
 
   socket.on('createMessage', (data, callback) => {
     const user = users.findById(socket.id);
 
     if (user && validString(data.text)) {
-      io.to(user.room).emit('newMessage', newMessage(user.name, data.text));
+      io.to(user.room.id).emit('newMessage', newMessage(user.name, data.text));
     }
     if (callback) callback();
   });
@@ -60,7 +67,7 @@ io.on('connection', socket => {
     const user = users.findById(socket.id);
 
     if (user) {
-      io.to(user.room).emit('newLocation', newLocation(user.name, data.latitude, data.longitude));
+      io.to(user.room.id).emit('newLocation', newLocation(user.name, data.latitude, data.longitude));
     }
     if (callback) callback();
   });
@@ -68,8 +75,8 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     const user = users.remove(socket.id);
     if (user) {
-      io.to(user.room).emit('updateUserList', users.getUserNameListByRoom(user.room));
-      io.to(user.room).emit('newMessage', newMessage('Admin', `${user.name} has left`));
+      io.to(user.room.id).emit('updateUserList', users.getUserNameListByRoom(user.room.name));
+      io.to(user.room.id).emit('newMessage', newMessage('Admin', `${user.name} has left`));
     }
     console.log('Client was disconnected');
   })

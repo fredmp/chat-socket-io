@@ -102,3 +102,7 @@ locationButton.on('click', function () {
     }
   );
 });
+
+jQuery('#logout').on('click', function () {
+  window.location.href = '/';
+});
